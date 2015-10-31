@@ -20,8 +20,8 @@
 @implementation ViewController
 
 - (void)viewDidLoad {
+    
     [super viewDidLoad];
-    // Do any additional setup after loading the view, typically from a nib.
 }
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
@@ -39,12 +39,43 @@
         NSString *filePath = [url stringByAppendingPathComponent:@"abc.caf"];
         //2、需要加上文件协议  ,需要把NSString 转化为nsurl
         
-        
         NSURL *fileUrl = [NSURL fileURLWithPath:filePath];
         
         //创建录音对象
         _recoeder = [[AVAudioRecorder alloc] initWithURL:fileUrl settings:nil error:nil];
     }
+    
     return _recoeder;
 }
+
+
+- (IBAction)startRecorder {
+    [self.recoeder record];
+}
+
+- (IBAction)stopRecorder {
+    [self.recoeder stop];
+}
+
+- (IBAction)playingRecorder {
+    
+    //1、定义SoundID
+    SystemSoundID soundID = 1;
+    
+    //2、获取沙盒路径
+    
+    NSString *path = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
+    
+    NSString *filePath = [path stringByAppendingPathComponent:@"abc.caf"];
+    
+    NSURL *fileURL = [NSURL fileURLWithPath:filePath];
+    
+    //3、给SOundID 赋值
+    AudioServicesCreateSystemSoundID((__bridge CFURLRef _Nonnull)(fileURL), &soundID);
+    
+    //4、播放音效
+    
+    AudioServicesPlayAlertSound(soundID);
+}
+
 @end
